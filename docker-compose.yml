@@ -1,0 +1,64 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_aerolinea
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+
+  crear:
+    build:
+      context: ./microservicios/crear
+    container_name: crear_service
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  leer:
+    build:
+      context: ./microservicios/leer
+    container_name: leer_service
+    depends_on:
+      - db
+    ports:
+      - "5001:5001"
+
+  actualizar:
+    build:
+      context: ./microservicios/actualizar
+    container_name: actualizar_service
+    depends_on:
+      - db
+    ports:
+      - "5002:5002"
+
+  eliminar:
+    build:
+      context: ./microservicios/eliminar
+    container_name: eliminar_service
+    depends_on:
+      - db
+    ports:
+      - "5003:5003"
+
+  frontend:
+    image: nginx:latest
+    container_name: frontend_service
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - crear
+      - leer
+      - actualizar
+      - eliminar
+
+volumes:
+  db_data:

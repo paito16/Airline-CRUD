@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS db_aerolinea;
+
+CREATE TABLE aerolineas (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    numero_aviones INT NOT NULL
+);
